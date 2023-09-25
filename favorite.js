@@ -29,14 +29,9 @@ const model = {
   movies: JSON.parse(localStorage.getItem('favoriteMovies')) || [],
   filteredMovies: [],
   pageAmount() {
-    console.log('Search Mode:', model.isSearchMode()) // 測試用
     if (model.isSearchMode()) {
-      console.log('Filtered Movies Length:', model.filteredMovies.length) // 測試用
-      console.log('Page Amount:', Math.ceil(model.filteredMovies.length / MOVIES_PER_PAGE)) // 測試用
       return Math.ceil(model.filteredMovies.length / MOVIES_PER_PAGE)
     } else {
-      console.log('Movies Length:', model.movies.length) // 測試用
-      console.log('Page Amount:', Math.ceil(model.movies.length / MOVIES_PER_PAGE)) // 測試用
       return Math.ceil(model.movies.length / MOVIES_PER_PAGE)
     }
   },
@@ -186,7 +181,6 @@ const controller = {
       view.renderNoFavorites()
     } else {
       // 暫存資料庫內已有資料，執行渲染功能
-      console.log('View Mode:', model.currentViewMode) // 測試用
       view.renderPageContent(this.getMoviesByPage(page), model.currentViewMode, model.pageAmount())
     }
 
@@ -213,7 +207,6 @@ const controller = {
     target.classList.add('active')
     model.currentViewMode = viewMode
     view.renderMovieList(this.getMoviesByPage(model.currentPage), model.currentViewMode)
-    console.log(model.currentViewMode, '| Search Mode:', model.isSearchMode(), '| Page:', model.currentPage) // 測試用
   },
 
   showMovieModal(id) {
@@ -252,18 +245,15 @@ const controller = {
     model.currentPage = page
     view.renderMovieList(this.getMoviesByPage(page), model.currentViewMode)
     view.markCurrentPage(page)
-    console.log('Go to page:', page, '| Search Mode:', model.isSearchMode())
   },
 
   removeFromFavorite(id) {
-    console.log('Remove:', id, '| Search mode:', model.isSearchMode())
     // 若movies陣列不存在或長度為零，則不執行此功能
     if (!model.movies || !model.movies.length) { return }
 
     // 如果在搜尋模式下，filterMovies 須同步刪除
     if (model.isSearchMode()) {
       const filteredMovieIndex = model.filteredMovies.findIndex((movie) => movie.id === id)
-      console.log('Filtered Movie Index:', filteredMovieIndex)
       model.filteredMovies.splice(filteredMovieIndex, 1)
     }
 

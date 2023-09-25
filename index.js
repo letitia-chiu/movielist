@@ -30,14 +30,9 @@ const model = {
   filteredMovies: [],
   favoriteMovies: JSON.parse(localStorage.getItem('favoriteMovies')) || [],
   pageAmount() {
-    console.log('Search Mode:', model.isSearchMode()) // 測試用
     if (model.isSearchMode()) {
-      console.log('Filtered Movies Length:', model.filteredMovies.length) // 測試用
-      console.log('Page Amount:', Math.ceil(model.filteredMovies.length / MOVIES_PER_PAGE)) // 測試用
       return Math.ceil(model.filteredMovies.length / MOVIES_PER_PAGE)
     } else {
-      console.log('Movies Length:', model.movies.length) // 測試用
-      console.log('Page Amount:', Math.ceil(model.movies.length / MOVIES_PER_PAGE)) // 測試用
       return Math.ceil(model.movies.length / MOVIES_PER_PAGE)
     }
   },
@@ -184,20 +179,17 @@ const view = {
 
 const controller = {
   showPageContent(page) {
-    console.log('Axios:', model.movies && !model.movies.length) // 測試用
     // 判斷是否須從API抓取資料
     if (model.movies && !model.movies.length) {
       // 若暫存資料庫內無資料
       axios.get(INDEX_URL).then((response) => {
         // 取得API回傳之物件組，並逐一匯入陣列，再進行渲染
         model.movies.push(...response.data.results)
-        console.log('View Mode:', model.currentViewMode) // 測試用
         view.renderPageContent(this.getMoviesByPage(page), model.currentViewMode, model.pageAmount())
 
       }).catch((error) => { console.log(error) }) // 錯誤處理
     } else {
       // 暫存資料庫內已有資料，直接執行渲染功能
-      console.log('View Mode:', model.currentViewMode) // 測試用
       view.renderPageContent(this.getMoviesByPage(page), model.currentViewMode, model.pageAmount())
     }
     
@@ -224,7 +216,6 @@ const controller = {
     target.classList.add('active')
     model.currentViewMode = viewMode
     view.renderMovieList(this.getMoviesByPage(model.currentPage), model.currentViewMode)
-    console.log(model.currentViewMode, '| Search Mode:', model.isSearchMode(), '| Page:', model.currentPage) // 測試用
   },
   
   showMovieModal(id) {   
@@ -271,7 +262,6 @@ const controller = {
     const movie = model.movies.find((movie) => movie.id === id)
     model.favoriteMovies.push(movie)
     localStorage.setItem('favoriteMovies', JSON.stringify(model.favoriteMovies))
-    console.log('Add Favorite:', id) // 測試用
 
     // 重新渲染已加最愛按鈕
     view.markFavorite(target)
@@ -281,7 +271,6 @@ const controller = {
     model.currentPage = page
     view.renderMovieList(this.getMoviesByPage(page), model.currentViewMode)
     view.markCurrentPage(page)
-    console.log('Go to page:', page, '| Search Mode:', model.isSearchMode())
   }
 }
 
